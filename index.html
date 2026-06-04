@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Praful Bhardwaj — AI/ML Engineer & Python Backend Developer</title>
+  <meta name="description"
+    content="Portfolio of Praful Bhardwaj — AI/ML Engineer and Python Backend Developer specializing in FastAPI, Machine Learning, and intelligent system design." />
+
+  <!-- Fonts: Syne (display) + DM Sans (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Extra styles for cert show-all toggle & toast -->
+  <style>
+    .cert-card.cert-hidden {
+      display: none;
+    }
+
+    .show-all-wrap {
+      text-align: center;
+      margin-top: 32px;
+    }
+
+    .btn-show-all {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      border-radius: var(--btn-radius);
+      border: 1.5px solid var(--border-accent);
+      background: transparent;
+      color: var(--accent-cyan);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .btn-show-all:hover {
+      background: rgba(0, 212, 255, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .btn-show-all svg {
+      width: 16px;
+      height: 16px;
+      transition: transform var(--transition);
+    }
+
+    .btn-show-all.expanded svg {
+      transform: rotate(180deg);
+    }
+
+    /* Toast notification */
+    #toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 3000;
+      padding: 14px 22px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      font-family: var(--font-body);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+    }
+
+    #toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    #toast.toast-success {
+      background: #0d2b1a;
+      border: 1px solid #1db954;
+      color: #4dda80;
+    }
+
+    #toast.toast-error {
+      background: #2b0d0d;
+      border: 1px solid #e04040;
+      color: #ff7070;
+    }
+
+    #toast svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    /* Project "working on" badge */
+    .wip-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      color: #f59e0b;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 100px;
+      padding: 3px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+
+    .wip-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #f59e0b;
+      animation: pulse 1.4s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.3;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Toast notification -->
+  <div id="toast" role="alert" aria-live="assertive"></div>
+
+  <!-- ═══════════════ PRELOADER ═══════════════ -->
+  <div id="preloader" aria-hidden="true">
+    <div class="preloader-inner">
+      <div class="preloader-logo">PB<span class="preloader-dot">.</span></div>
+      <div class="preloader-bar">
+        <div class="preloader-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ CUSTOM CURSOR ═══════════════ -->
+  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+  <!-- ═══════════════ NAVBAR ═══════════════ -->
+  <header id="navbar" role="banner">
+    <nav class="nav-container" aria-label="Main navigation">
+      <a href="#hero" class="nav-logo" aria-label="Go to top">
+        <span class="logo-text">PB</span><span class="logo-dot">.</span>
+      </a>
+
+      <ul class="nav-links" role="list" id="navLinks">
+        <li><a href="#hero" class="nav-link active" data-section="hero">Home</a></li>
+        <li><a href="#about" class="nav-link" data-section="about">About</a></li>
+        <li><a href="#skills" class="nav-link" data-section="skills">Skills</a></li>
+        <li><a href="#projects" class="nav-link" data-section="projects">Projects</a></li>
+        <li><a href="#achievements" class="nav-link" data-section="achievements">Achievements</a></li>
+        <li><a href="#certifications" class="nav-link" data-section="certifications">Certs</a></li>
+        <li><a href="#contact" class="nav-link" data-section="contact">Contact</a></li>
+      </ul>
+
+      <a href="#contact" class="nav-cta btn-sm">Let's Talk</a>
+
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ═══════════════ HERO SECTION ═══════════════ -->
+  <section id="hero" class="section-hero" aria-label="Introduction">
+    <canvas id="heroCanvas" aria-hidden="true"></canvas>
+
+    <div class="blob blob-1" aria-hidden="true"></div>
+    <div class="blob blob-2" aria-hidden="true"></div>
+    <div class="blob blob-3" aria-hidden="true"></div>
+
+    <div class="hero-content">
+      <div class="hero-badge reveal-up" style="--delay:0.1s">
+        <span class="badge-dot"></span>
+        Available for opportunities
+      </div>
+
+      <h1 class="hero-name reveal-up" style="--delay:0.2s">
+        Hi, I'm <span class="gradient-text">Praful Bhardwaj</span>
+      </h1>
+
+      <div class="hero-role reveal-up" style="--delay:0.3s">
+        <span class="role-prefix">I build </span>
+        <span class="typed-text" id="typedText" aria-live="polite"></span>
+        <span class="cursor-blink" aria-hidden="true">|</span>
+      </div>
+
+      <p class="hero-bio reveal-up" style="--delay:0.4s">
+        Crafting intelligent backends and machine-learning systems that scale —
+        from model training pipelines to production-grade APIs. I turn complex
+        AI concepts into clean, deployable software.
+      </p>
+
+      <div class="hero-actions reveal-up" style="--delay:0.5s">
+        <a href="#projects" class="btn btn-primary">
+          <i data-lucide="layers" class="btn-icon"></i>
+          View Projects
+        </a>
+        <a href="https://drive.google.com/file/d/YOUR_RESUME_FILE_ID/view?usp=sharing" class="btn btn-ghost"
+          id="resumeBtn" target="_blank" rel="noopener noreferrer">
+          <i data-lucide="download" class="btn-icon"></i>
+          Download Résumé
+        </a>
+      </div>
+
+      <div class="hero-socials reveal-up" style="--delay:0.6s">
+        <a href="https://github.com/Prafulbhardwaj4" class="social-link" aria-label="GitHub" target="_blank"
+          rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
+            <path
+              d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+          </svg>
+        </a>
+        <a href="https://linkedin.com/in/praful3504" class="social-link" aria-label="LinkedIn" target="_blank"
+          rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
+            <path
+              d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+          </svg>
+        </a>
+        <!-- LeetCode custom SVG -->
+        <a href="https://leetcode.com/u/PrafulT04/" class="social-link" aria-label="LeetCode" target="_blank"
+          rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
+            <path
+              d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0zm-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79a1.38 1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z" />
+          </svg>
+        </a>
+        <a href="mailto:prafulbhardwaj1397@gmail.com" class="social-link" aria-label="Email">
+          <i data-lucide="mail"></i>
+        </a>
+      </div>
+
+      <div class="tech-float tech-float-1 reveal-up" style="--delay:0.8s" aria-hidden="true">
+        <span class="tf-icon">🐍</span> Python
+      </div>
+      <div class="tech-float tech-float-2 reveal-up" style="--delay:0.9s" aria-hidden="true">
+        <span class="tf-icon">⚡</span> FastAPI
+      </div>
+      <div class="tech-float tech-float-3 reveal-up" style="--delay:1.0s" aria-hidden="true">
+        <span class="tf-icon">🤖</span> ML
+      </div>
+    </div>
+
+    <div class="scroll-indicator" aria-hidden="true">
+      <div class="scroll-mouse">
+        <div class="scroll-wheel"></div>
+      </div>
+      <span>Scroll to explore</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════ TECH TICKER ═══════════════ -->
+  <div class="ticker-section" aria-hidden="true">
+    <div class="ticker-track">
+      <div class="ticker-inner" id="tickerInner">
+        <span>Python</span><span class="ticker-sep">◆</span>
+        <span>FastAPI</span><span class="ticker-sep">◆</span>
+        <span>Scikit-learn</span><span class="ticker-sep">◆</span>
+        <span>PostgreSQL</span><span class="ticker-sep">◆</span>
+        <span>NLP</span><span class="ticker-sep">◆</span>
+        <span>REST APIs</span><span class="ticker-sep">◆</span>
+        <span>Machine Learning</span><span class="ticker-sep">◆</span>
+        <span>SQLite</span><span class="ticker-sep">◆</span>
+        <span>Git & GitHub</span><span class="ticker-sep">◆</span>
+        <span>JWT Auth</span><span class="ticker-sep">◆</span>
+        <span>Streamlit</span><span class="ticker-sep">◆</span>
+        <span>LLMs</span><span class="ticker-sep">◆</span>
+        <span>Docker</span><span class="ticker-sep">◆</span>
+        <span>DSA</span><span class="ticker-sep">◆</span>
+        <!-- Duplicate for seamless loop -->
+        <span>Python</span><span class="ticker-sep">◆</span>
+        <span>FastAPI</span><span class="ticker-sep">◆</span>
+        <span>Scikit-learn</span><span class="ticker-sep">◆</span>
+        <span>PostgreSQL</span><span class="ticker-sep">◆</span>
+        <span>NLP</span><span class="ticker-sep">◆</span>
+        <span>REST APIs</span><span class="ticker-sep">◆</span>
+        <span>Machine Learning</span><span class="ticker-sep">◆</span>
+        <span>SQLite</span><span class="ticker-sep">◆</span>
+        <span>Git & GitHub</span><span class="ticker-sep">◆</span>
+        <span>JWT Auth</span><span class="ticker-sep">◆</span>
+        <span>Streamlit</span><span class="ticker-sep">◆</span>
+        <span>LLMs</span><span class="ticker-sep">◆</span>
+        <span>Docker</span><span class="ticker-sep">◆</span>
+        <span>DSA</span><span class="ticker-sep">◆</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ ABOUT SECTION ═══════════════ -->
+  <section id="about" class="section" aria-label="About me">
+    <div class="container">
+      <div class="section-header reveal-up">
+        <span class="section-label">Who I Am</span>
+        <h2 class="section-title">About <span class="gradient-text">Me</span></h2>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-visual reveal-left">
+          <div class="profile-frame">
+            <div class="profile-placeholder">
+              <div class="profile-initials">PB</div>
+              <div class="profile-ring ring-1" aria-hidden="true"></div>
+              <div class="profile-ring ring-2" aria-hidden="true"></div>
+              <div class="profile-orbit" aria-hidden="true">
+                <div class="orbit-dot"></div>
+              </div>
+            </div>
+            <div class="skill-chip chip-tl" aria-hidden="true">FastAPI</div>
+            <div class="skill-chip chip-tr" aria-hidden="true">ML</div>
+            <div class="skill-chip chip-bl" aria-hidden="true">Python</div>
+            <div class="skill-chip chip-br" aria-hidden="true">NLP</div>
+          </div>
+        </div>
+
+        <div class="about-content reveal-right">
+          <p class="about-lead">
+            I'm an AI/ML Engineer and Python Backend Developer passionate about building
+            systems that bridge research and production.
+          </p>
+          <p class="about-body">
+            My work spans designing RESTful APIs with <strong>FastAPI</strong>,
+            training and deploying <strong>NLP-based machine learning models</strong>, and building
+            end-to-end AI pipelines. I thrive at the intersection of clean code and
+            intelligent systems — where engineering discipline meets algorithmic curiosity.
+          </p>
+          <p class="about-body">
+            Currently a final-year CSE undergraduate at Lovely Professional University,
+            I've built real-world AI/ML projects from a customer ticket triage system to
+            a real-time speech captioning pipeline. Always learning, always shipping.
+          </p>
+
+          <div class="about-tags">
+            <span class="tag">FastAPI</span>
+            <span class="tag">Python</span>
+            <span class="tag">Machine Learning</span>
+            <span class="tag">NLP</span>
+            <span class="tag">PostgreSQL</span>
+            <span class="tag">SQLite</span>
+            <span class="tag">REST APIs</span>
+            <span class="tag">JWT Auth</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stat cards — realistic numbers -->
+      <div class="stats-grid reveal-up" style="--delay:0.2s">
+        <div class="stat-card">
+          <div class="stat-icon"><i data-lucide="package"></i></div>
+          <div class="stat-value counter" data-target="5">0</div>
+          <div class="stat-label">Real-World Projects</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i data-lucide="code-2"></i></div>
+          <div class="stat-value counter" data-target="50" data-suffix="+">0</div>
+          <div class="stat-label">LeetCode Problems</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i data-lucide="award"></i></div>
+          <div class="stat-value counter" data-target="15" data-suffix="+">0</div>
+          <div class="stat-label">Certifications</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i data-lucide="cpu"></i></div>
+          <div class="stat-value counter" data-target="13">0</div>
+          <div class="stat-label">Technologies Used</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SKILLS SECTION ═══════════════ -->
+  <section id="skills" class="section section-alt" aria-label="Skills">
+    <div class="container">
+      <div class="section-header reveal-up">
+        <span class="section-label">What I Use</span>
+        <h2 class="section-title">Technical <span class="gradient-text">Skills</span></h2>
+      </div>
+
+      <div class="skills-grid">
+        <!-- Languages -->
+        <div class="skill-category reveal-up" style="--delay:0.05s">
+          <div class="skill-cat-header">
+            <div class="skill-cat-icon"><i data-lucide="terminal"></i></div>
+            <h3>Languages</h3>
+          </div>
+          <div class="skill-pills">
+            <span class="skill-pill pill-top">Python</span>
+            <span class="skill-pill">SQL</span>
+          </div>
+        </div>
+
+        <!-- Machine Learning / NLP -->
+        <div class="skill-category reveal-up" style="--delay:0.1s">
+          <div class="skill-cat-header">
+            <div class="skill-cat-icon"><i data-lucide="brain"></i></div>
+            <h3>AI / ML / NLP</h3>
+          </div>
+          <div class="skill-pills">
+            <span class="skill-pill pill-top">Machine Learning</span>
+            <span class="skill-pill">NLP</span>
+            <span class="skill-pill">Scikit-learn</span>
+            <span class="skill-pill">LLMs</span>
+            <span class="skill-pill">Generative AI</span>
+            <span class="skill-pill">Prompt Engineering</span>
+          </div>
+        </div>
+
+        <!-- Backend -->
+        <div class="skill-category reveal-up" style="--delay:0.15s">
+          <div class="skill-cat-header">
+            <div class="skill-cat-icon"><i data-lucide="server"></i></div>
+            <h3>Backend</h3>
+          </div>
+          <div class="skill-pills">
+            <span class="skill-pill pill-top">FastAPI</span>
+            <span class="skill-pill">REST API Design</span>
+            <span class="skill-pill">JWT Authentication</span>
+            <span class="skill-pill">CRUD Operations</span>
+            <span class="skill-pill">Streamlit</span>
+          </div>
+        </div>
+
+        <!-- Databases -->
+        <div class="skill-category reveal-up" style="--delay:0.2s">
+          <div class="skill-cat-header">
+            <div class="skill-cat-icon"><i data-lucide="database"></i></div>
+            <h3>Databases</h3>
+          </div>
+          <div class="skill-pills">
+            <span class="skill-pill pill-top">PostgreSQL</span>
+            <span class="skill-pill">SQLite</span>
+            <span class="skill-pill">SQL Query Optimization</span>
+          </div>
+        </div>
+
+        <!-- Tools & DevOps -->
+        <div class="skill-category reveal-up" style="--delay:0.25s">
+          <div class="skill-cat-header">
+            <div class="skill-cat-icon"><i data-lucide="wrench"></i></div>
+            <h3>Tools & DevOps</h3>
+          </div>
+          <div class="skill-pills">
+            <span class="skill-pill pill-top">Git & GitHub</span>
+            <span class="skill-pill">Docker</span>
+            <span class="skill-pill">Postman</span>
+            <span class="skill-pill">Jupyter</span>
+            <span class="skill-pill">VS Code</span>
+          </div>
+        </div>
+
+        <!-- CS Fundamentals -->
+        <div class="skill-category reveal-up" style="--delay:0.3s">
+          <div class="skill-cat-header">
+            <div class="skill-cat-icon"><i data-lucide="graduation-cap"></i></div>
+            <h3>CS Fundamentals</h3>
+          </div>
+          <div class="skill-pills">
+            <span class="skill-pill pill-top">Data Structures & Algorithms</span>
+            <span class="skill-pill">OOP</span>
+            <span class="skill-pill">DBMS</span>
+            <span class="skill-pill">Operating Systems</span>
+            <span class="skill-pill">Computer Networks</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ PROJECTS SECTION ═══════════════ -->
+  <section id="projects" class="section" aria-label="Projects">
+    <div class="container">
+      <div class="section-header reveal-up">
+        <span class="section-label">What I've Built</span>
+        <h2 class="section-title">Featured <span class="gradient-text">Projects</span></h2>
+        <p class="section-sub">Real AI/ML systems built from scratch — from data pipelines to deployed APIs.</p>
+      </div>
+
+      <!-- Filter tabs -->
+      <div class="project-filters reveal-up" role="tablist" aria-label="Project categories">
+        <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">All</button>
+        <button class="filter-btn" data-filter="aiml" role="tab" aria-selected="false">AI / ML</button>
+        <button class="filter-btn" data-filter="backend" role="tab" aria-selected="false">Backend</button>
+        <button class="filter-btn" data-filter="nlp" role="tab" aria-selected="false">NLP</button>
+      </div>
+
+      <div class="projects-grid" id="projectsGrid">
+
+        <!-- Project 1: Customer Support Ticket Prioritization (COMPLETED) -->
+        <article class="project-card reveal-up" data-category="aiml backend" style="--delay:0.05s">
+          <div class="project-card-top">
+            <div class="project-icon-wrap">
+              <i data-lucide="ticket" class="project-icon"></i>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/Prafulbhardwaj4/Ticket-Prioritization-System" class="icon-btn"
+                aria-label="View on GitHub" target="_blank" rel="noopener">
+                <i data-lucide="github"></i>
+              </a>
+            </div>
+          </div>
+
+          <h3 class="project-title">Customer Support Ticket Prioritization System</h3>
+          <p class="project-desc">
+            Full-stack AI-powered complaint management platform with role-based JWT authentication.
+            Trained an NLP + ML pipeline on real customer support data to auto-classify tickets
+            by priority, sentiment, and category — reducing manual triage effort significantly.
+          </p>
+
+          <ul class="project-features">
+            <li><i data-lucide="check" aria-hidden="true"></i> NLP classifier trained on 50,000+ real customer tweets
+              (TF-IDF + Scikit-learn)</li>
+            <li><i data-lucide="check" aria-hidden="true"></i> FastAPI backend with 10+ RESTful endpoints, validated via
+              Postman</li>
+            <li><i data-lucide="check" aria-hidden="true"></i> Role-based JWT auth separating user and admin workflows
+            </li>
+            <li><i data-lucide="check" aria-hidden="true"></i> SQLite persistent storage with optimized indexed queries
+            </li>
+          </ul>
+
+          <div class="project-stack">
+            <span>Python</span><span>FastAPI</span><span>Scikit-learn</span><span>NLP</span><span>SQLite</span><span>Streamlit</span>
+          </div>
+
+          <div class="project-actions">
+            <a href="https://github.com/Prafulbhardwaj4/Ticket-Prioritization-System" class="btn btn-ghost btn-sm"
+              target="_blank" rel="noopener" aria-label="View on GitHub">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                <path d="M9 18c-4.51 2-5-2-7-2" />
+              </svg>
+              GitHub
+            </a>
+            <a href="https://www.linkedin.com/feed/update/urn:li:activity:7463552544045408257/"
+              class="btn btn-ghost btn-sm" target="_blank" rel="noopener" aria-label="View Live Demo">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+              Demo
+            </a>
+          </div>
+        </article>
+
+        <!-- Project 2: Real-Time AI Captioning (COMPLETED) -->
+        <article class="project-card reveal-up" data-category="aiml nlp" style="--delay:0.1s">
+          <div class="project-card-top">
+            <div class="project-icon-wrap">
+              <i data-lucide="mic" class="project-icon"></i>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/Prafulbhardwaj4/Real-time-captioning" class="icon-btn"
+                aria-label="View on GitHub" target="_blank" rel="noopener">
+                <i data-lucide="github"></i>
+              </a>
+            </div>
+          </div>
+
+          <h3 class="project-title">Real-Time AI Captioning System</h3>
+          <p class="project-desc">
+            Real-time speech-to-text pipeline achieving live captioning with under 200ms latency.
+            Built with automatic language detection supporting 10+ languages — an accessibility-focused
+            AI project with a modular, production-ready architecture.
+          </p>
+
+          <ul class="project-features">
+            <li><i data-lucide="check" aria-hidden="true"></i> Live captioning latency under 200ms via optimized STT API
+              integration</li>
+            <li><i data-lucide="check" aria-hidden="true"></i> Multilingual transcription across 10+ languages with auto
+              language detection</li>
+            <li><i data-lucide="check" aria-hidden="true"></i> Modular pipeline: audio capture → API streaming → NLP
+              post-processing → live render</li>
+          </ul>
+
+          <div class="project-stack">
+            <span>Python</span><span>FastAPI</span><span>Streamlit</span><span>Speech-to-Text
+              APIs</span><span>NLP</span>
+          </div>
+
+          <div class="project-actions">
+            <a href="https://github.com/Prafulbhardwaj4/Real-time-captioning" class="btn btn-ghost btn-sm"
+              target="_blank" rel="noopener" aria-label="View on GitHub">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                <path d="M9 18c-4.51 2-5-2-7-2" />
+              </svg>
+              GitHub
+            </a>
+            <a href="https://www.linkedin.com/feed/update/urn:li:activity:7454421864724082688/"
+              class="btn btn-ghost btn-sm" target="_blank" rel="noopener" aria-label="View Live Demo">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+              Demo
+            </a>
+          </div>
+        </article>
+
+        <!-- Project 3: Movie Recommendation System (COMPLETED) -->
+        <article class="project-card reveal-up" data-category="aiml nlp" style="--delay:0.15s">
+          <div class="project-card-top">
+            <div class="project-icon-wrap">
+              <i data-lucide="film" class="project-icon"></i>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/Prafulbhardwaj4" class="icon-btn" aria-label="View on GitHub" target="_blank"
+                rel="noopener">
+                <i data-lucide="github"></i>
+              </a>
+            </div>
+          </div>
+
+          <h3 class="project-title">Movie Recommendation System</h3>
+          <p class="project-desc">
+            Content-based recommendation engine delivering personalized movie suggestions using
+            cosine similarity on feature vectors extracted from movie metadata. Clean Python + ML
+            implementation with an interactive Streamlit frontend.
+          </p>
+
+          <ul class="project-features">
+            <li><i data-lucide="check" aria-hidden="true"></i> Cosine similarity-based content filtering for
+              personalized recommendations</li>
+            <li><i data-lucide="check" aria-hidden="true"></i> Feature extraction from movie genres, cast, crew, and
+              keywords</li>
+            <li><i data-lucide="check" aria-hidden="true"></i> Interactive Streamlit UI for real-time suggestions</li>
+          </ul>
+
+          <div class="project-stack">
+            <span>Python</span><span>Scikit-learn</span><span>Pandas</span><span>NumPy</span><span>Streamlit</span>
+          </div>
+
+          <div class="project-actions">
+            <a href="https://github.com/Prafulbhardwaj4" class="btn btn-ghost btn-sm" target="_blank" rel="noopener"
+              aria-label="View on GitHub">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                <path d="M9 18c-4.51 2-5-2-7-2" />
+              </svg>
+              GitHub
+            </a>
+            <a href="#" class="btn btn-ghost btn-sm" target="_blank" rel="noopener" aria-label="View Live Demo">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+              Demo
+            </a>
+          </div>
+        </article>
+
+        <!-- Project 4: NLP Spell Corrector (COMPLETED — Hackathon) -->
+        <article class="project-card reveal-up" data-category="nlp aiml" style="--delay:0.2s">
+          <div class="project-card-top">
+            <div class="project-icon-wrap">
+              <i data-lucide="spell-check" class="project-icon"></i>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/Prafulbhardwaj4" class="icon-btn" aria-label="View on GitHub" target="_blank"
+                rel="noopener">
+                <i data-lucide="github"></i>
+              </a>
+            </div>
+          </div>
+
+          <h3 class="project-title">NLP Spell Corrector</h3>
+          <p class="project-desc">
+            Built during the CodeSprint Hackathon 2024 at LPU — an NLP-based spelling correction
+            system that detects and corrects misspelled words using text preprocessing and
+            similarity matching techniques.
+          </p>
+
+          <ul class="project-features">
+            <li><i data-lucide="check" aria-hidden="true"></i> NLP-based spelling detection and correction pipeline</li>
+            <li><i data-lucide="check" aria-hidden="true"></i> Text preprocessing: tokenization, normalization,
+              edit-distance matching</li>
+            <li><i data-lucide="check" aria-hidden="true"></i> Built end-to-end at CodeSprint Hackathon 2024 — LPU</li>
+          </ul>
+
+          <div class="project-stack">
+            <span>Python</span><span>NLP</span><span>NLTK</span><span>Text Preprocessing</span>
+          </div>
+
+          <div class="project-actions">
+            <a href="https://github.com/Prafulbhardwaj4" class="btn btn-ghost btn-sm" target="_blank" rel="noopener"
+              aria-label="View on GitHub">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                <path d="M9 18c-4.51 2-5-2-7-2" />
+              </svg>
+              GitHub
+            </a>
+            <a href="#" class="btn btn-ghost btn-sm" target="_blank" rel="noopener" aria-label="View Live Demo">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+              Demo
+            </a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ ACHIEVEMENTS SECTION ═══════════════ -->
+  <section id="achievements" class="section section-alt" aria-label="Achievements">
+    <div class="container">
+      <div class="section-header reveal-up">
+        <span class="section-label">Milestones</span>
+        <h2 class="section-title">Key <span class="gradient-text">Achievements</span></h2>
+      </div>
+
+      <div class="timeline">
+
+        <div class="timeline-item reveal-left" style="--delay:0.05s">
+          <div class="tl-dot"><i data-lucide="trophy"></i></div>
+          <div class="tl-card">
+            <div class="tl-meta">
+              <span class="tl-tag">Hackathon</span>
+              <span class="tl-year">Oct 2024</span>
+            </div>
+            <h3 class="tl-title">CodeSprint Hackathon 2024 — NLP Spell Corrector</h3>
+            <p class="tl-body">
+              Built an NLP-based Spell Corrector at the CodeSprint Hackathon hosted by
+              Lovely Professional University — detecting and correcting misspelled words
+              using text preprocessing and similarity matching techniques under time pressure.
+            </p>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal-right" style="--delay:0.1s">
+          <div class="tl-dot"><i data-lucide="ticket"></i></div>
+          <div class="tl-card">
+            <div class="tl-meta">
+              <span class="tl-tag">AI/ML Engineering</span>
+              <span class="tl-year">Mar 2026</span>
+            </div>
+            <h3 class="tl-title">Shipped Full-Stack AI Ticket Prioritization Platform</h3>
+            <p class="tl-body">
+              Architected and deployed a complete SaaS complaint management platform — NLP
+              classifier trained on 50,000+ tweets, FastAPI backend with 10+ endpoints,
+              JWT role-based auth, and an admin dashboard backed by optimized SQLite storage.
+            </p>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal-left" style="--delay:0.15s">
+          <div class="tl-dot"><i data-lucide="mic"></i></div>
+          <div class="tl-card">
+            <div class="tl-meta">
+              <span class="tl-tag">Real-Time AI</span>
+              <span class="tl-year">Jan 2026</span>
+            </div>
+            <h3 class="tl-title">Real-Time AI Captioning with &lt;200ms Latency</h3>
+            <p class="tl-body">
+              Built a live speech-to-text captioning system with sub-200ms end-to-end latency,
+              automatic multilingual support across 10+ languages, and a modular
+              FastAPI + Streamlit architecture designed for production reliability.
+            </p>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal-right" style="--delay:0.2s">
+          <div class="tl-dot"><i data-lucide="code-2"></i></div>
+          <div class="tl-card">
+            <div class="tl-meta">
+              <span class="tl-tag">DSA</span>
+              <span class="tl-year">2024–2025</span>
+            </div>
+            <h3 class="tl-title">50+ LeetCode / DSA Problems Solved</h3>
+            <p class="tl-body">
+              Consistent algorithmic problem solving across arrays, stacks, linked lists,
+              and recursion — with a focus on time and space complexity optimization.
+              Building a strong foundation in Data Structures and Algorithms.
+            </p>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal-left" style="--delay:0.25s">
+          <div class="tl-dot"><i data-lucide="award"></i></div>
+          <div class="tl-card">
+            <div class="tl-meta">
+              <span class="tl-tag">Learning</span>
+              <span class="tl-year">2024–2026</span>
+            </div>
+            <h3 class="tl-title">15+ Certifications in AI, ML & Backend Engineering</h3>
+            <p class="tl-body">
+              Completed 15+ industry-recognized certifications from DeepLearning.AI,
+              IBM, Duke University, OpenAI, and other platforms — covering Generative AI,
+              supervised ML, Python backend, and more.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ CERTIFICATIONS SECTION ═══════════════ -->
+  <section id="certifications" class="section" aria-label="Certifications">
+    <div class="container">
+      <div class="section-header reveal-up">
+        <span class="section-label">Credentials</span>
+        <h2 class="section-title">Certifications & <span class="gradient-text">Courses</span></h2>
+      </div>
+
+      <div class="certs-grid" id="certsGrid">
+
+        <!-- VISIBLE INITIALLY (6 certs) -->
+
+        <div class="cert-card reveal-up" style="--delay:0.05s">
+          <div class="cert-logo cert-dl">DL</div>
+          <div class="cert-body">
+            <h3 class="cert-title">Generative AI with Large Language Models</h3>
+            <p class="cert-issuer">DeepLearning.AI · Coursera</p>
+            <p class="cert-year">Mar 2024</p>
+          </div>
+          <a href="https://coursera.org/verify/P472LHABM9FQ" class="cert-verify" target="_blank" rel="noopener" aria-label="Verify certification">
+            Verify <i data-lucide="external-link"></i>
+          </a>
+        </div>
+
+        <div class="cert-card reveal-up" style="--delay:0.1s">
+          <div class="cert-logo cert-fast">AI</div>
+          <div class="cert-body">
+            <h3 class="cert-title">Build AI Apps with ChatGPT, DALL-E and GPT-4</h3>
+            <p class="cert-issuer">OpenAI · Scrimba</p>
+            <p class="cert-year">Apr 2024</p>
+          </div>
+          <a href="https://coursera.org/verify/MBTYUL6BXSQQ" class="cert-verify" target="_blank" rel="noopener"
+            aria-label="Verify certification">
+            Verify <i data-lucide="external-link"></i>
+          </a>
+        </div>
+
+        <div class="cert-card reveal-up" style="--delay:0.15s">
+          <div class="cert-logo cert-gcp">Duke</div>
+          <div class="cert-body">
+            <h3 class="cert-title">Introduction to Machine Learning</h3>
+            <p class="cert-issuer">Duke University · Coursera</p>
+            <p class="cert-year">May 2026</p>
+          </div>
+          <a href="#" class="cert-verify" target="_blank" rel="noopener" aria-label="Verify certification">
+            Verify <i data-lucide="external-link"></i>
+          </a>
+        </div>
+
+        <div class="cert-card reveal-up" style="--delay:0.2s">
+          <div class="cert-logo cert-py">IBM</div>
+          <div class="cert-body">
+            <h3 class="cert-title">Supervised Machine Learning: Regression</h3>
+            <p class="cert-issuer">IBM · Coursera</p>
+            <p class="cert-year">May 2026</p>
+          </div>
+          <a href="#" class="cert-verify" target="_blank" rel="noopener" aria-label="Verify certification">
+            Verify <i data-lucide="external-link"></i>
+          </a>
+        </div>
+
+        <div class="cert-card reveal-up" style="--delay:0.25s">
+          <div class="cert-logo cert-gcp">GCP</div>
+          <div class="cert-body">
+            <h3 class="cert-title">Introduction to Generative AI</h3>
+            <p class="cert-issuer">Google Cloud Skills Boost</p>
+            <p class="cert-year">2024</p>
+          </div>
+          <a href="#" class="cert-verify" target="_blank" rel="noopener" aria-label="Verify certification">
+            Verify <i data-lucide="external-link"></i>
+          </a>
+        </div>
+
+        <div class="cert-card reveal-up" style="--delay:0.3s">
+          <div class="cert-logo cert-dl">DL</div>
+          <div class="cert-body">
+            <h3 class="cert-title">Introduction to Large Language Models</h3>
+            <p class="cert-issuer">Google Cloud Skills Boost</p>
+            <p class="cert-year">2024</p>
+          </div>
+          <a href="https://coursera.org/verify/XDZX5LH2ZLC4" class="cert-verify" target="_blank" rel="noopener"
+            aria-label="Verify certification">
+            Verify <i data-lucide="external-link"></i>
+          </a>
+        </div>
+
+        <!-- ADDITIONAL CERTS (hidden until Show All is clicked) -->
+
+        <div class="cert-card cert-hidden reveal-up" style="--delay:0.05s">
+          <div class="cert-logo cert-fast">PE</div>
+          <div class="cert-body">
+            <h3 class="cert-title">Prompt Engineering for ChatGPT</h3>
+            <p class="cert-issuer">Vanderbilt University · Coursera</p>
+            <p class="cert-year">2024</p>
+          </div>
+          <a href="https://coursera.org/verify/5SKVF767UQ9W" class="cert-verify" target="_blank" rel="noopener"
+            aria-label="Verify certification">
+            Verify <i data-lucide="external-link"></i>
+          </a>
+        </div>
+
+        <div class="cert-card cert-hidden reveal-up" style="--delay:0.15s">
+          <div class="cert-logo cert-mlops">PM</div>
+          <div class="cert-body">
+            <h3 class="cert-title">Agile Project Management</h3>
+            <p class="cert-issuer">Google · Coursera</p>
+            <p class="cert-year">2024</p>
+          </div>
+          <a href="https://coursera.org/verify/OOGEF3MW09JC" class="cert-verify" target="_blank" rel="noopener"
+            aria-label="Verify certification">
+            Verify <i data-lucide="external-link"></i>
+          </a>
+        </div>
+
+        <div class="cert-card cert-hidden reveal-up" style="--delay:0.1s">
+          <div class="cert-logo cert-py">WD</div>
+          <div class="cert-body">
+            <h3 class="cert-title">Full Stack Web Development</h3>
+            <p class="cert-issuer">LinkedIn</p>
+            <p class="cert-year">2023</p>
+          </div>
+          <a href="https://www.linkedin.com/learning/certificates/da1c6876d1ef3af601b7fac87fbd416857b130ede3e388fba73ce7da0ce8c666"
+            class="cert-verify" target="_blank" rel="noopener" aria-label="Verify certification">
+            Verify <i data-lucide="external-link"></i>
+          </a>
+        </div>
+
+        <div class="cert-card cert-hidden reveal-up" style="--delay:0.15s">
+          <div class="cert-logo cert-mlops">Py</div>
+          <div class="cert-body">
+            <h3 class="cert-title">Python Basic Certificate</h3>
+            <p class="cert-issuer">HackerRank</p>
+            <p class="cert-year">2023</p>
+          </div>
+          <a href="https://www.hackerrank.com/certificates/a61db6e1b6b3" class="cert-verify" target="_blank"
+            rel="noopener" aria-label="Verify certification">
+            Verify <i data-lucide="external-link"></i>
+          </a>
+        </div>
+
+        <div class="cert-card cert-hidden reveal-up" style="--delay:0.2s">
+          <div class="cert-logo cert-gcp">UX</div>
+          <div class="cert-body">
+            <h3 class="cert-title">Google UX Design Professional Certificate</h3>
+            <p class="cert-issuer">Google · Coursera</p>
+            <p class="cert-year">2024</p>
+          </div>
+          <a href="https://coursera.org/verify/professional-cert/BRXFFRL2UEC8" class="cert-verify" target="_blank"
+            rel="noopener" aria-label="Verify certification">
+            Verify <i data-lucide="external-link"></i>
+          </a>
+        </div>
+
+        <div class="cert-card cert-hidden reveal-up" style="--delay:0.05s">
+          <div class="cert-logo cert-aws">MS</div>
+          <div class="cert-body">
+            <h3 class="cert-title">Work Smarter with Microsoft 365 Copilot</h3>
+            <p class="cert-issuer">Microsoft · LinkedIn Learning</p>
+            <p class="cert-year">2025</p>
+          </div>
+          <a href="#" class="cert-verify" target="_blank" rel="noopener" aria-label="Verify certification">
+            Verify <i data-lucide="external-link"></i>
+          </a>
+        </div>
+
+        <div class="cert-card cert-hidden reveal-up" style="--delay:0.1s">
+          <div class="cert-logo cert-dl">AI</div>
+          <div class="cert-body">
+            <h3 class="cert-title">ChatGPT Advanced Data Analysis</h3>
+            <p class="cert-issuer">Vanderbilt University · Coursera</p>
+            <p class="cert-year">2024</p>
+          </div>
+          <a href="https://coursera.org/verify/KQK99U3TUHK8" class="cert-verify" target="_blank" rel="noopener"
+            aria-label="Verify certification">
+            Verify <i data-lucide="external-link"></i>
+          </a>
+        </div>
+
+
+        <div class="cert-card cert-hidden reveal-up" style="--delay:0.2s">
+          <div class="cert-logo cert-fast">WM</div>
+          <div class="cert-body">
+            <h3 class="cert-title">Walmart Advanced Software Engineering</h3>
+            <p class="cert-issuer">Walmart · Forage</p>
+            <p class="cert-year">2025</p>
+          </div>
+          <a href="https://www.theforage.com/completion-certificates/prBZoAihniNijyD6d/oX6f9BbCL9kJDJzfg_prBZoAihniNijyD6d_6a0c055e05090cb50850e050_1779212286317_completion_certificate.pdf" class="cert-verify" target="_blank" rel="noopener" aria-label="Verify certification">
+            Verify <i data-lucide="external-link"></i>
+          </a>
+        </div>
+
+        <div class="cert-card cert-hidden reveal-up" style="--delay:0.05s">
+          <div class="cert-logo cert-py">GenAI</div>
+          <div class="cert-body">
+            <h3 class="cert-title">Generative AI for Everyone</h3>
+            <p class="cert-issuer">DeepLearning.AI · Coursera</p>
+            <p class="cert-year">2024</p>
+          </div>
+          <a href="https://coursera.org/verify/WPB3XUV3BRN5" class="cert-verify" target="_blank" rel="noopener" aria-label="Verify certification">
+            Verify <i data-lucide="external-link"></i>
+          </a>
+        </div>
+
+      </div>
+
+      <!-- Show All Certifications button -->
+      <div class="show-all-wrap reveal-up" style="--delay:0.3s">
+        <button class="btn-show-all" id="showAllCerts" aria-expanded="false">
+          <span id="showAllText">Show All Certifications</span>
+          <i data-lucide="chevron-down"></i>
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════ CONTACT SECTION ═══════════════ -->
+  <section id="contact" class="section section-alt" aria-label="Contact">
+    <div class="container">
+      <div class="section-header reveal-up">
+        <span class="section-label">Let's Connect</span>
+        <h2 class="section-title">Get in <span class="gradient-text">Touch</span></h2>
+        <p class="section-sub">Open to full-time roles, internships, and interesting collaborations.</p>
+      </div>
+
+      <div class="contact-grid">
+        <!-- Contact info -->
+        <div class="contact-info reveal-left">
+          <h3 class="contact-heading">I'd love to hear from you.</h3>
+          <p class="contact-body">
+            Whether you have a project in mind, a question about my work, or just want
+            to connect — drop a message. I typically respond within 24 hours.
+          </p>
+
+          <div class="contact-links">
+            <a href="mailto:prafulbhardwaj1397@gmail.com" class="contact-link-card">
+              <div class="clc-icon"><i data-lucide="mail"></i></div>
+              <div>
+                <div class="clc-label">Email</div>
+                <div class="clc-value">prafulbhardwaj1397@gmail.com</div>
+              </div>
+            </a>
+            <a href="https://linkedin.com/in/praful3504" class="contact-link-card" target="_blank" rel="noopener">
+              <div class="clc-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
+                  <path
+                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                </svg>
+              </div>
+              <div>
+                <div class="clc-label">LinkedIn</div>
+                <div class="clc-value">linkedin.com/in/praful3504</div>
+              </div>
+            </a>
+            <a href="https://github.com/Prafulbhardwaj4" class="contact-link-card" target="_blank" rel="noopener">
+              <div class="clc-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
+                  <path
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                </svg>
+              </div>
+              <div>
+                <div class="clc-label">GitHub</div>
+                <div class="clc-value">github.com/Prafulbhardwaj4</div>
+              </div>
+            </a>
+            <a href="https://leetcode.com/u/PrafulT04/" class="contact-link-card" target="_blank" rel="noopener">
+              <div class="clc-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+                  <path
+                    d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0zm-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79a1.38 1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z" />
+                </svg>
+              </div>
+              <div>
+                <div class="clc-label">LeetCode</div>
+                <div class="clc-value">leetcode.com/u/PrafulT04/</div>
+              </div>
+            </a>
+          </div>
+
+          <a href="https://drive.google.com/file/d/YOUR_RESUME_FILE_ID/view?usp=sharing"
+            class="btn btn-primary resume-full-btn" target="_blank" rel="noopener noreferrer">
+            <i data-lucide="file-text" class="btn-icon"></i>
+            Download Résumé
+          </a>
+        </div>
+
+        <!-- Contact form — powered by EmailJS -->
+        <div class="contact-form-wrap reveal-right">
+          <form class="contact-form" id="contactForm" novalidate>
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" id="name" name="from_name" placeholder="Your name" required autocomplete="name" />
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="reply_to" placeholder="your@email.com" required
+                autocomplete="email" />
+            </div>
+            <div class="form-group">
+              <label for="subject">Subject</label>
+              <input type="text" id="subject" name="subject" placeholder="What's this about?" />
+            </div>
+            <div class="form-group">
+              <label for="message">Message</label>
+              <textarea id="message" name="message" rows="5" placeholder="Tell me about your project or opportunity..."
+                required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full" id="submitBtn">
+              <span id="submitText">Send Message</span>
+              <i data-lucide="send" class="btn-icon" id="submitIcon"></i>
+            </button>
+            <div class="form-success" id="formSuccess" aria-live="polite" style="display:none;">
+              <i data-lucide="check-circle"></i> Message sent! I'll get back to you soon.
+            </div>
+            <div class="form-error" id="formError" aria-live="polite"
+              style="display:none; align-items:center; gap:8px; padding:12px 16px; background:rgba(224,64,64,0.08); border:1px solid rgba(224,64,64,0.3); border-radius:10px; font-size:0.875rem; color:#ff7070; font-weight:500; margin-top:0;">
+              <i data-lucide="x-circle"></i> Something went wrong. Please email me directly.
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">PB<span>.</span></div>
+          <p class="footer-tagline">
+            Building intelligent systems — one commit at a time.
+          </p>
+          <div class="footer-socials">
+            <a href="https://github.com/Prafulbhardwaj4" class="social-link" aria-label="GitHub" target="_blank"
+              rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
+                <path
+                  d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+              </svg>
+            </a>
+            <a href="https://linkedin.com/in/praful3504" class="social-link" aria-label="LinkedIn" target="_blank"
+              rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
+                <path
+                  d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+              </svg>
+            </a>
+            <a href="mailto:prafulbhardwaj1397@gmail.com" class="social-link" aria-label="Email"><i
+                data-lucide="mail"></i></a>
+          </div>
+        </div>
+
+        <div class="footer-nav">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-nav">
+          <h4>Projects</h4>
+          <ul>
+            <li><a href="#projects">Ticket AI System</a></li>
+            <li><a href="#projects">AI Captioning</a></li>
+            <li><a href="#projects">Movie Recommender</a></li>
+            <li><a href="#projects">NLP Spell Corrector</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="footer-copy">© 2026 Praful Bhardwaj. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════════ PROJECT DETAIL MODAL ═══════════════ -->
+  <div id="projectModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal-panel">
+      <button class="modal-close" id="modalClose" aria-label="Close modal">
+        <i data-lucide="x"></i>
+      </button>
+      <div class="modal-content" id="modalContent"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
