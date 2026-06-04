@@ -21,7 +21,7 @@ const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // e.g. 'abcDEF_ghiJKL12'
    Replace with your actual Google Drive file link.
    Make sure sharing is set to "Anyone with the link".
    ───────────────────────────────────────────────────── */
-const RESUME_URL = 'https://drive.google.com/file/d/YOUR_RESUME_FILE_ID/view?usp=sharing';
+const RESUME_URL = 'https://drive.google.com/uc?export=download&id=1irKkOY3gWp30WixrJ7ZlwKyW0_Nij91G';
 
 /* ── Initialise Lucide icons ──────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
